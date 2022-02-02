@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "718398980046",
+    "project_id": "astrology-797df",
+    "storage_bucket": "astrology-797df.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:718398980046:android:0ec1e778655d93b546359f",
+        "android_client_info": {
+          "package_name": "ru.ekbapp.astrology_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "718398980046-30hchaeb1g7ie8hn2m5g1jtssn9oe0e5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-3V-xg2FsRIVF5nWEp5Yz1mH88UXGaEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "718398980046-30hchaeb1g7ie8hn2m5g1jtssn9oe0e5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "718398980046-35d3a5k85agtvv0n4n6askofp7g5sh4l.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.ekbapp.astrologyApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

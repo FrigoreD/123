@@ -1,5 +1,4 @@
 import 'package:astrology_app/Class/MenuItem.dart';
-import 'package:astrology_app/Screens/MainScreen.dart';
 import 'package:astrology_app/Screens/ReminderScreen.dart';
 import 'package:astrology_app/Screens/SaveDaysScreen.dart';
 import 'package:astrology_app/Screens/SearchScreen.dart';
@@ -8,6 +7,8 @@ import 'package:astrology_app/Widgets/menuButton.dart';
 import 'package:astrology_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+
+import 'main/main_screen.dart';
 
 
 
@@ -81,7 +82,7 @@ class _MenuState extends State<MenuPage>{
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               menuButton(title: S.of(context).menu_search,onClick: (){
-                Navigator.push(
+                Navigator.push<void>(
                   context,
                   MaterialPageRoute(builder: (context) => SearchScreen()),
                 );

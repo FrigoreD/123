@@ -24,26 +24,27 @@ class _DateTimePickerState extends State<DateTimePicker> {
   TextEditingController _dateController = TextEditingController();
   TextEditingController _timeController = TextEditingController();
 
-  Future<Null> _selectDate(BuildContext context) async {
+  Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
         context: context,
         initialDate: selectedDate,
         initialDatePickerMode: DatePickerMode.day,
         firstDate: DateTime(2015),
         lastDate: DateTime(2101));
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         selectedDate = picked;
         _dateController.text = DateFormat.yMd().format(selectedDate);
       });
+    }
   }
 
-  Future<Null> _selectTime(BuildContext context) async {
+  Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay picked = await showTimePicker(
       context: context,
       initialTime: selectedTime,
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         selectedTime = picked;
         _hour = selectedTime.hour.toString();
@@ -54,6 +55,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
             DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
             [hh, ':', nn, " ", am]).toString();
       });
+    }
   }
 
   @override

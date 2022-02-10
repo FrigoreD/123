@@ -26,7 +26,7 @@ class _EditScreenState extends State<EditScreen>{
             ),
           ),
           onPressed: (){
-            Navigator.push(
+            Navigator.push<void>(
               context,
               MaterialPageRoute(builder: (context) => MenuScreen()),
             );

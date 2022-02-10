@@ -12,13 +12,14 @@ import 'package:progress_dialog/progress_dialog.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:astrology_app/Class/CountryClass.dart';
 import 'package:astrology_app/Page/RegistrationPage.dart';
-import 'package:astrology_app/Screens/MainScreen.dart';
 import 'package:astrology_app/Widgets/ButtionLine.dart';
 import 'package:astrology_app/Widgets/SelectorWiget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+
+import 'main/main_screen.dart';
 
 
 final AuthController _authController=AuthController();

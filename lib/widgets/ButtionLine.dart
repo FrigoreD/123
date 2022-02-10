@@ -9,21 +9,20 @@ import 'package:flutter/material.dart';
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(top: 12),
+      margin: const EdgeInsets.only(top: 12),
       child: ElevatedButton(
-        onPressed: () =>onClick(),
+        onPressed: onClick,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: 24),
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
                   title,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontFamily: 'SF Pro Display',
                   ),
                 ),

@@ -1,18 +1,18 @@
-import 'package:astrology_app/helper/dialog_helper.dart';
+import '../helper/dialog_helper.dart';
 import 'package:astrology_app/services/app_exception.dart';
 
-class BaseController{
-  void handleError(error){
-    if(error is BadRequestException){
-      var message=error.message;
+class BaseController {
+  void handleError(dynamic error) {
+    if (error is BadRequestException) {
+      var message = error.message;
       DialogHelper.showErrorDialog(description: message);
-    }else if(error is FetchDataException){
-      var message=error.message;
+    } else if (error is FetchDataException) {
+      var message = error.message;
       DialogHelper.showErrorDialog(description: message);
-    }else if (error is ApiNotRespondingException){
-      var message='Api Not Responding Exception';
+    } else if (error is ApiNotRespondingException) {
+      var message = 'Api Not Responding Exception';
       DialogHelper.showErrorDialog(description: message);
-    }else if (error is NotFoundException){
+    } else if (error is NotFoundException) {
       DialogHelper.showErrorDialog(description: 'Page not Found');
     }
   }

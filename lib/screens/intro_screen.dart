@@ -1,16 +1,17 @@
-import 'package:astrology_app/Screens/RegistrationScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'main/main_screen.dart';
+import 'registration_screen.dart';
 
 class IntroScreen extends StatefulWidget {
+  const IntroScreen({Key key}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<IntroScreen> {
-  var UserId = '';
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +25,18 @@ class _LoginPageState extends State<IntroScreen> {
   }
 
   Future<bool> isUserLoggedIn() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getBool('userLogin') ?? false;
   }
 
   void checkingTheSavedData() {
     isUserLoggedIn().then((isLogged) {
       if (isLogged) {
-        Route route = MaterialPageRoute(builder: (context) => MainScreen());
+        final Route route = MaterialPageRoute(builder: (context) =>  const MainScreen());
         Navigator.pushReplacement(context, route);
       } else {
-        Route route =
-            MaterialPageRoute(builder: (context) => RegistrationScreen());
+        final Route route =
+            MaterialPageRoute(builder: (context) => const RegistrationScreen());
         Navigator.pushReplacement(context, route);
       }
     });

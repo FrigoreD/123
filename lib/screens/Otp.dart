@@ -1,13 +1,14 @@
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:astrology_app/generated/l10n.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:progress_dialog/progress_dialog.dart';
+
+import '../generated/l10n.dart';
 
 class Otp extends StatefulWidget {
   final String email;
@@ -18,13 +19,13 @@ class Otp extends StatefulWidget {
   const Otp({
     Key key,
     @required this.email,
-    this.newEmail = "",
+    this.newEmail = '',
     this.isGuestCheckOut,
     this.token='',
   }) : super(key: key);
 
   @override
-  _OtpState createState() => new _OtpState();
+  _OtpState createState() => _OtpState();
 }
 
 class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
@@ -44,18 +45,18 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   int totalTimeInSeconds;
   bool _hideResendButton;
 
-  String userName = "";
+  String userName = '';
   bool didReadNotifications = false;
   int unReadNotificationsCount = 0;
 
   // Returns "Appbar"
-  get _getAppbar {
-    return new AppBar(
+  AppBar get _getAppbar {
+    return AppBar(
       backgroundColor: Colors.transparent,
       elevation: 0.0,
-      leading: new InkWell(
+      leading: InkWell(
         borderRadius: BorderRadius.circular(30.0),
-        child: new Icon(
+        child: const Icon(
           Icons.arrow_back,
           color: Colors.black54,
         ),
@@ -68,28 +69,28 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Return "Verification Code" label
-  get _getVerificationCodeLabel {
-    return new Text(
+  Text get _getVerificationCodeLabel {
+    return Text(
       S.of(context).OTP_TITLE,
       textAlign: TextAlign.center,
-      style: new TextStyle(
+      style: const TextStyle(
           fontSize: 28.0, color: Colors.black, fontWeight: FontWeight.bold),
     );
   }
 
   // Return "Email" label
-  get _getEmailLabel {
-    return new Text(
+  Text get _getEmailLabel {
+    return Text(
       S.of(context).OTP_MESSAGE,
       textAlign: TextAlign.center,
-      style: new TextStyle(
+      style: const TextStyle(
           fontSize: 18.0, color: Colors.black, fontWeight: FontWeight.w600),
     );
   }
 
   // Return "OTP" input field
-  get _getInputField {
-    return new Row(
+  Row get _getInputField {
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
         _otpTextField(_firstDigit),
@@ -101,31 +102,30 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Returns "OTP" input part
-  get _getInputPart {
-    return new Column(
-      mainAxisSize: MainAxisSize.max,
+  Column get _getInputPart {
+    return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         _getVerificationCodeLabel,
         _getEmailLabel,
         _getInputField,
-        _hideResendButton ? _getTimerText : _getResendButton,
+        if (_hideResendButton) _getTimerText else _getResendButton,
         _getOtpKeyboard
       ],
     );
   }
 
   // Returns "Timer" label
-  get _getTimerText {
-    return Container(
+  SizedBox get _getTimerText {
+    return SizedBox(
       height: 32,
-      child: new Offstage(
+      child: Offstage(
         offstage: !_hideResendButton,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Icon(Icons.access_time),
-            new SizedBox(
+            const Icon(Icons.access_time),
+            const SizedBox(
               width: 5.0,
             ),
             OtpTimer(_controller, 15.0, Colors.black)
@@ -136,20 +136,19 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Returns "Resend" button
-  get _getResendButton {
-    return new InkWell(
-      child: new Container(
+  InkWell get _getResendButton {
+    return InkWell(
+      child: Container(
         height: 32,
         width: 120,
         decoration: BoxDecoration(
             color: Colors.black,
-            shape: BoxShape.rectangle,
             borderRadius: BorderRadius.circular(32)),
         alignment: Alignment.center,
-        child: new Text(
+        child: Text(
           S.of(context).OTP_RESEND,
           style:
-          new TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+          const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       onTap: () {
@@ -159,91 +158,91 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Returns "Otp" keyboard
-  get _getOtpKeyboard {
-    return new Container(
+  SizedBox get _getOtpKeyboard {
+    return SizedBox(
         height: _screenSize.width - 80,
-        child: new Column(
+        child: Column(
           children: <Widget>[
-            new Expanded(
-              child: new Row(
+            Expanded(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   _otpKeyboardInputButton(
-                      label: "1",
+                      label: '1',
                       onPressed: () {
                         _setCurrentDigit(1);
                       }),
                   _otpKeyboardInputButton(
-                      label: "2",
+                      label: '2',
                       onPressed: () {
                         _setCurrentDigit(2);
                       }),
                   _otpKeyboardInputButton(
-                      label: "3",
+                      label: '3',
                       onPressed: () {
                         _setCurrentDigit(3);
                       }),
                 ],
               ),
             ),
-            new Expanded(
-              child: new Row(
+            Expanded(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   _otpKeyboardInputButton(
-                      label: "4",
+                      label: '4',
                       onPressed: () {
                         _setCurrentDigit(4);
                       }),
                   _otpKeyboardInputButton(
-                      label: "5",
+                      label: '5',
                       onPressed: () {
                         _setCurrentDigit(5);
                       }),
                   _otpKeyboardInputButton(
-                      label: "6",
+                      label: '6',
                       onPressed: () {
                         _setCurrentDigit(6);
                       }),
                 ],
               ),
             ),
-            new Expanded(
-              child: new Row(
+            Expanded(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   _otpKeyboardInputButton(
-                      label: "7",
+                      label: '7',
                       onPressed: () {
                         _setCurrentDigit(7);
                       }),
                   _otpKeyboardInputButton(
-                      label: "8",
+                      label: '8',
                       onPressed: () {
                         _setCurrentDigit(8);
                       }),
                   _otpKeyboardInputButton(
-                      label: "9",
+                      label: '9',
                       onPressed: () {
                         _setCurrentDigit(9);
                       }),
                 ],
               ),
             ),
-            new Expanded(
-              child: new Row(
+            Expanded(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  new SizedBox(
+                  const SizedBox(
                     width: 80.0,
                   ),
                   _otpKeyboardInputButton(
-                      label: "0",
+                      label: '0',
                       onPressed: () {
                         _setCurrentDigit(0);
                       }),
                   _otpKeyboardActionButton(
-                      label: new Icon(
+                      label: const Icon(
                         Icons.backspace,
                         color: Colors.black,
                       ),
@@ -295,10 +294,10 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     _screenSize = MediaQuery.of(context).size;
-    return new Scaffold(
+    return Scaffold(
       appBar: _getAppbar,
       backgroundColor: Colors.white,
-      body: new Container(
+      body: SizedBox(
         width: _screenSize.width,
 //        padding: new EdgeInsets.only(bottom: 16.0),
         child: _getInputPart,
@@ -308,44 +307,43 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
 
   // Returns "Otp custom text field"
   Widget _otpTextField(int digit) {
-    return new Container(
+    return Container(
       width: 35.0,
       height: 45.0,
       alignment: Alignment.center,
-      child: new Text(
-        digit != null ? digit.toString() : "",
-        style: new TextStyle(
-          fontSize: 30.0,
-          color: Colors.black,
-        ),
-      ),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
 //            color: Colors.grey.withOpacity(0.4),
           border: Border(
               bottom: BorderSide(
                 width: 2.0,
-                color: Colors.black,
               ))),
+      child: Text(
+        digit != null ? digit.toString() : '',
+        style: const TextStyle(
+          fontSize: 30.0,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 
   // Returns "Otp keyboard input Button"
   Widget _otpKeyboardInputButton({String label, VoidCallback onPressed}) {
-    return new Material(
+    return Material(
       color: Colors.transparent,
-      child: new InkWell(
+      child: InkWell(
         onTap: onPressed,
-        borderRadius: new BorderRadius.circular(40.0),
-        child: new Container(
+        borderRadius: BorderRadius.circular(40.0),
+        child: Container(
           height: 80.0,
           width: 80.0,
-          decoration: new BoxDecoration(
+          decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
-          child: new Center(
-            child: new Text(
+          child: Center(
+            child: Text(
               label,
-              style: new TextStyle(
+              style: const TextStyle(
                 fontSize: 30.0,
                 color: Colors.black,
               ),
@@ -357,17 +355,17 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Returns "Otp keyboard action Button"
-  _otpKeyboardActionButton({Widget label, VoidCallback onPressed}) {
-    return new InkWell(
+  InkWell _otpKeyboardActionButton({Widget label, VoidCallback onPressed}) {
+    return InkWell(
       onTap: onPressed,
-      borderRadius: new BorderRadius.circular(40.0),
-      child: new Container(
+      borderRadius: BorderRadius.circular(40.0),
+      child: Container(
         height: 80.0,
         width: 80.0,
-        decoration: new BoxDecoration(
+        decoration: const BoxDecoration(
           shape: BoxShape.circle,
         ),
-        child: new Center(
+        child: Center(
           child: label,
         ),
       ),
@@ -375,7 +373,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
   }
 
   // Current digit
-  void _setCurrentDigit(int i) async {
+  Future<void> _setCurrentDigit(int i) async {
 
     setState(() {
       _currentDigit = i;
@@ -388,7 +386,7 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
       } else if (_fourthDigit == null) {
         _fourthDigit = _currentDigit;
 
-        var otp = _firstDigit.toString() +
+        final otp = _firstDigit.toString() +
             _secondDigit.toString() +
             _thirdDigit.toString() +
             _fourthDigit.toString();
@@ -399,12 +397,12 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
     });
   }
 
-  Future<Null> _startCountdown() async {
+  Future<void> _startCountdown() async {
     setState(() {
       _hideResendButton = true;
       totalTimeInSeconds = time;
     });
-    _controller.reverse(
+    await _controller.reverse(
         from: _controller.value == 0.0 ? 1.0 : _controller.value);
   }
 
@@ -415,51 +413,51 @@ class _OtpState extends State<Otp> with SingleTickerProviderStateMixin {
     _firstDigit = null;
     setState(() {});
   }
-  void checkCode(code,BuildContext context, email)async{
+  Future<void> checkCode(code,BuildContext context, email)async{
     final ProgressDialog pr = ProgressDialog(context);
     try{
       await pr.show();
-      var url = Uri.parse('https://astrologyspica.dev-prod.com.ua/api/customers/checkCode');
-      var response = await http.post(url, body: jsonEncode({
-        "email": email,
-        "code": code,
-        "token": widget.token
+      final url = Uri.parse('https://astrologyspica.dev-prod.com.ua/api/customers/checkCode');
+      final response = await http.post(url, body: jsonEncode({
+        'email': email,
+        'code': code,
+        'token': widget.token
       }),headers: {'Content-Type':'application/json'});
       if(response.statusCode==200){
-        Map<String,dynamic> map=jsonDecode(response.body);
-        await storage.write(key: "session", value: map['token']);
+        final Map<String,dynamic> map=jsonDecode(response.body);
+        await storage.write(key: 'session', value: map['token']);
         print( map['token']);
         await pr.hide();
         Navigator.pop(context, 'done');
       }else if(response.statusCode==401||response.statusCode==204){
         await pr.hide();
-        final snackBar = SnackBar(content: Text("Ошибка в коде"));
+        const snackBar = SnackBar(content: Text('Ошибка в коде'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }else{
         await pr.hide();
-        final snackBar = SnackBar(content: Text("Неизвестная ошибка"));
+        const snackBar = SnackBar(content: Text('Неизвестная ошибка'));
         ScaffoldMessenger.of(context).showSnackBar(snackBar);
       }
     }on SocketException {
       await pr.hide();
       print('No Internet connection 😑');
-      final snackBar = SnackBar(content: Text("SocketException"));
+      const snackBar = SnackBar(content: Text('SocketException'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } on HttpException {
       await pr.hide();
       print("Couldn't find the post 😱");
-      final snackBar = SnackBar(content: Text("HttpException"));
+      const snackBar = SnackBar(content: Text('HttpException'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } on FormatException {
       await pr.hide();
-      print("Bad response format 👎");
-      final snackBar = SnackBar(content: Text("FormatException"));
+      print('Bad response format 👎');
+      const snackBar = SnackBar(content: Text('FormatException'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
 }
-final storage = new FlutterSecureStorage();
+const storage = FlutterSecureStorage();
 class OtpTimer extends StatelessWidget {
   final AnimationController controller;
   double fontSize;
@@ -468,7 +466,7 @@ class OtpTimer extends StatelessWidget {
   OtpTimer(this.controller, this.fontSize, this.timeColor);
 
   String get timerString {
-    Duration duration = controller.duration * controller.value;
+    final Duration duration = controller.duration * controller.value;
     if (duration.inHours > 0) {
       return '${duration.inHours}:${duration.inMinutes % 60}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
     }
@@ -476,7 +474,7 @@ class OtpTimer extends StatelessWidget {
   }
 
   Duration get duration {
-    Duration duration = controller.duration;
+    final Duration duration = controller.duration;
     return duration;
   }
 
@@ -485,9 +483,9 @@ class OtpTimer extends StatelessWidget {
     return AnimatedBuilder(
         animation: controller,
         builder: (BuildContext context, Widget child) {
-          return new Text(
+          return Text(
             timerString,
-            style: new TextStyle(
+            style: TextStyle(
                 fontSize: fontSize,
                 color: timeColor,
                 fontWeight: FontWeight.w600),

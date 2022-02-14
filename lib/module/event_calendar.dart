@@ -1,8 +1,9 @@
-import 'package:astrology_app/Module/DateTimePicker.dart';
 import 'package:flutter/material.dart';
 
 
 class EventCalendar extends StatefulWidget{
+  const EventCalendar({Key key}) : super(key: key);
+
   @override
   _EventCalendar createState()=>_EventCalendar();
 
@@ -10,20 +11,18 @@ class EventCalendar extends StatefulWidget{
 class _EventCalendar extends State<EventCalendar>{
   @override
   Widget build(BuildContext context) {
-    return  Container(
-      child: CustomMultiChildLayout(
-        delegate: YourLayoutDelegate(),
-        children: [
-          LayoutId(
-            id: 1, // The id can be anything, i.e. any Object, also an enum value.
-            child: Text('Widget one'), // This is the widget you actually want to show.
-          ),
-          LayoutId(
-            id: 2, // You will need to refer to that id when laying out your children.
-            child: Text('Widget two'),
-          ),
-        ],
-      )
+    return  CustomMultiChildLayout(
+      delegate: YourLayoutDelegate(),
+      children: [
+        LayoutId(
+          id: 1, // The id can be anything, i.e. any Object, also an enum value.
+          child: const Text('Widget one'), // This is the widget you actually want to show.
+        ),
+        LayoutId(
+          id: 2, // You will need to refer to that id when laying out your children.
+          child: const Text('Widget two'),
+        ),
+      ],
     );
   }
 

@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'Screens/IntroScreen.dart';
 import 'core/di/service_locator.dart';
 import 'generated/l10n.dart';
+import 'screens/intro_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -19,37 +18,36 @@ Future<void> main() async {
   await Firebase.initializeApp();
   await Hive.initFlutter();
 
-  var initializationSettingsAndroid =
-      AndroidInitializationSettings('@mipmap/ic_launcher_new');
-  var initializationSettingsIOS = IOSInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+  const initializationSettingsAndroid =
+       AndroidInitializationSettings('@mipmap/ic_launcher_new');
+  final initializationSettingsIOS = IOSInitializationSettings(
       onDidReceiveLocalNotification:
           (int id, String title, String body, String payload) async {});
-  var initializationSettings = InitializationSettings(
+  final initializationSettings = InitializationSettings(
       iOS: initializationSettingsIOS, android: initializationSettingsAndroid);
   await flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: (String payload) async {
     if (payload != null) {
-      print('notification payload ${payload}');
+      print('notification payload $payload');
     }
   });
 
-  await Future.delayed(Duration(microseconds: 10));
+  await Future<void>.delayed(const Duration(microseconds: 10));
   configureDependencies();
-  await Future.delayed(Duration(microseconds: 10));
+  await Future<void>.delayed(const Duration(microseconds: 10));
 
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    precacheImage(AssetImage("assets/images/vector.png"), context);
+    precacheImage(const AssetImage('assets/images/vector.png'), context);
 
     return GetMaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -60,7 +58,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: IntroScreen(),
+      home: const IntroScreen(),
     );
   }
 }

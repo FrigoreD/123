@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
   class ButtonLine extends StatelessWidget{
+     const ButtonLine({Key key, this.onClick, this.title}) : super(key: key);
   final VoidCallback  onClick;
   final String title;
 
-  const ButtonLine({Key key, this.onClick, this.title}) : super(key: key);
+ 
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,6 @@ import 'package:flutter/material.dart';
             Container(
               padding: const EdgeInsets.symmetric(vertical: 24),
               child: Align(
-                alignment: Alignment.center,
                 child: Text(
                   title,
                   textAlign: TextAlign.center,

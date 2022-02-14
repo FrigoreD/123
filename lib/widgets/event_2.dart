@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 class _Page {
@@ -18,13 +17,15 @@ class _Page {
 }
 
 final List<_Page> _allPages = <_Page>[
-  _Page(1, 'Item 1', Colors.orange),
-  _Page(2, 'Item 2', Colors.red),
-  _Page(3, 'Item 3', Colors.blue),
-  _Page(4, 'Item 4', Colors.green),
+  const _Page(1, 'Item 1', Colors.orange),
+  const _Page(2, 'Item 2', Colors.red),
+  const _Page(3, 'Item 3', Colors.blue),
+  const _Page(4, 'Item 4', Colors.green),
 ];
 
 class Event2 extends StatelessWidget {
+  const Event2({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -33,19 +34,19 @@ class Event2 extends StatelessWidget {
         body: NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return <Widget>[
-              new SliverOverlapAbsorber(
+              SliverOverlapAbsorber(
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: _buildSliverAppBar(context),
               ),
             ];
           },
-          body: new TabBarView(
+          body: TabBarView(
             children: _allPages
                 .map(
                   (page) => SafeArea(
                 top: false,
                 bottom: false,
-                child: new Builder(
+                child: Builder(
                   builder: (context) {
                     return _buildTabBarView(context, page);
                   },
@@ -60,9 +61,9 @@ class Event2 extends StatelessWidget {
   }
 
   Widget _buildTabBarView(BuildContext context, _Page page) {
-    List<Widget> slivers = new List<Widget>();
+    final List<Widget> slivers = <Widget>[];
 
-    slivers.add(new SliverObstructionInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)));
+    slivers.add(SliverObstructionInjector(handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context)));
     slivers.addAll(_buildSideHeaderGrids(0, 5, page.color));
 
     return CustomScrollView(
@@ -75,11 +76,11 @@ class Event2 extends StatelessWidget {
     return SliverAppBar(
       pinned: true,
       expandedHeight: 150.0,
-      title: Text('Main AppBar'),
+      title: const Text('Main AppBar'),
       bottom: TabBar(
         tabs: _allPages
             .map(
-              (p) => new Tab(
+              (p) => Tab(
             child: Text(p.title),
           ),
         )
@@ -91,28 +92,29 @@ class Event2 extends StatelessWidget {
   List<Widget> _buildSideHeaderGrids(int firstIndex, int count, Color color) {
     return List.generate(count, (sliverIndex) {
       sliverIndex += firstIndex;
-      return new SliverStickyHeader(
+      return SliverStickyHeader(
         overlapsContent: true,
         header: _buildSideHeader(sliverIndex, color),
-        sliver: new SliverPadding(
-          padding: new EdgeInsets.only(left: 60.0),
-          sliver: new SliverGrid(
-            gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 4.0, mainAxisSpacing: 4.0, childAspectRatio: 1.0),
-            delegate: new SliverChildBuilderDelegate(
-                  (context, i) => new GridTile(
-                child: Card(
-                  child: new Container(
-                    color: color,
-                  ),
-                ),
-                footer: new Container(
+        sliver: SliverPadding(
+          // ignore: prefer_const_constructors
+          padding: EdgeInsets.only(left: 60.0),
+          sliver: SliverGrid(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3, crossAxisSpacing: 4.0, mainAxisSpacing: 4.0),
+            delegate: SliverChildBuilderDelegate(
+                  (context, i) => GridTile(
+                footer: Container(
                   color: Colors.white.withOpacity(0.5),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: new Text(
+                    child: Text(
                       'Grid tile #$i',
                       style: const TextStyle(color: Colors.black),
                     ),
+                  ),
+                ),
+                child: Card(
+                  child: Container(
+                    color: color,
                   ),
                 ),
               ),
@@ -125,15 +127,15 @@ class Event2 extends StatelessWidget {
   }
 
   Widget _buildSideHeader(int index, Color color) {
-    return new Container(
+    return Container(
       height: 60.0,
       color: Colors.transparent,
-      padding: EdgeInsets.symmetric(horizontal: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       alignment: Alignment.centerLeft,
-      child: new CircleAvatar(
+      child: CircleAvatar(
         backgroundColor: color,
         foregroundColor: Colors.white,
-        child: new Text('$index'),
+        child: Text('$index'),
       ),
     );
   }
@@ -153,7 +155,7 @@ class SliverObstructionInjector extends SliverOverlapInjector {
 
   @override
   RenderSliverObstructionInjector createRenderObject(BuildContext context) {
-    return new RenderSliverObstructionInjector(
+    return RenderSliverObstructionInjector(
       handle: handle,
     );
   }
@@ -172,7 +174,6 @@ class RenderSliverObstructionInjector extends RenderSliverOverlapInjector {
   /// The [handle] must not be null.
   RenderSliverObstructionInjector({
     @required SliverOverlapAbsorberHandle handle,
-    RenderSliver child,
   })  : assert(handle != null),
         _handle = handle,
         super(handle: handle);
@@ -185,8 +186,10 @@ class RenderSliverObstructionInjector extends RenderSliverOverlapInjector {
   ///
   /// This should be a handle owned by a [RenderSliverOverlapAbsorber] and a
   /// [RenderNestedScrollViewViewport].
+  @override
   SliverOverlapAbsorberHandle get handle => _handle;
   SliverOverlapAbsorberHandle _handle;
+  @override
   set handle(SliverOverlapAbsorberHandle value) {
     assert(value != null);
     if (handle == value) return;
@@ -211,8 +214,7 @@ class RenderSliverObstructionInjector extends RenderSliverOverlapInjector {
   void performLayout() {
     _currentLayoutExtent = handle.layoutExtent;
     _currentMaxExtent = handle.layoutExtent;
-    geometry = new SliverGeometry(
-      scrollExtent: 0.0,
+    geometry = SliverGeometry(
       paintExtent: _currentLayoutExtent,
       maxPaintExtent: _currentMaxExtent,
     );

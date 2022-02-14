@@ -1,16 +1,13 @@
-import 'package:astrology_app/Screens/MenuScreen.dart';
-import 'package:astrology_app/controller/predictions_controller.dart';
-import 'package:astrology_app/models/prediction.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
-import 'package:astrology_app/generated/l10n.dart';
-import 'package:syncfusion_flutter_datepicker/datepicker.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:printing/printing.dart';
 import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
+
+import '../controller/predictions_controller.dart';
+import '../generated/l10n.dart';
+import '../models/prediction.dart';
+import 'menu_screen.dart';
 
 
 DateTime select=DateTime.now();
@@ -23,6 +20,8 @@ PredictionsController _predictionsController=PredictionsController();
 
 
 class SaveDaysScreen extends StatefulWidget {
+  const SaveDaysScreen({Key key}) : super(key: key);
+
   @override
   _SaveDaysState createState() => _SaveDaysState();
 }
@@ -35,48 +34,47 @@ class _SaveDaysState extends State<SaveDaysScreen>{
         elevation: 0.0,
         leading: IconButton(
           icon: Container(
-            child: Center(
-              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
-            ),
-
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
+            child: const Center(
+              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
+            ),
           ),
           onPressed: (){
-            Navigator.push(
+            Navigator.push<void>(
               context,
-              MaterialPageRoute(builder: (context) => MenuScreen()),
+              MaterialPageRoute(builder: (context) => const MenuScreen()),
             );
           },
         ),
-        title: Text(S.of(context).menu_save_days,textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
+        title: Text(S.of(context).menu_save_days,textAlign: TextAlign.center,style: const TextStyle(color: Colors.black),),
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
               color: Colors.grey[100]
           ),
           child: Column(
             children: [
               Visibility(
+                visible: loadData,
                 child: Column(
-                  children: [
+                  children: const [
                     LinearProgressIndicator(),
                     SizedBox(height: 12,)
                   ],
                 ),
-                visible: loadData,
               ),
-              Container(
+              SizedBox(
                 height: 300,
                 child: SfDateRangePicker(
                   selectionMode: DateRangePickerSelectionMode.range,
                   onSelectionChanged: (date){
-                    debugPrint("select startDate "+date.value.startDate.toString());
-                    debugPrint("select endDate "+date.value.endDate.toString());
+                    debugPrint('select startDate ${date.value.startDate}');
+                    debugPrint('select endDate ${date.value.endDate}');
                     start=date.value.startDate;
                     end=date.value.endDate;
                     if(date.value.startDate!=null&&date.value.endDate!=null){
@@ -99,46 +97,44 @@ class _SaveDaysState extends State<SaveDaysScreen>{
                 ),
                 height: 2,
                 width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 10),
+                margin: const EdgeInsets.symmetric(horizontal: 10),
               ),
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10,horizontal: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10,horizontal: 10),
                 child: Align(
+                  alignment: Alignment.centerLeft,
                   child: Text(
-                    S.of(context).print_select_days+" "+selectDays.toString(),
+                    '${S.of(context).print_select_days} $selectDays',
                     textAlign: TextAlign.left,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 18
                     ),
                   ),
-                  alignment: Alignment.centerLeft,
                 ),
               ),
-              Spacer(),
+              const Spacer(),
               Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 12),
+                    margin: const EdgeInsets.only(top: 12),
                     child: ElevatedButton(
                       onPressed: () async{
                         setState(() {
                           loadData=true;
                         });
-                        List<Predictions> list= await _predictionsController.getPredictionsByRange(start,end);
+                        final List<Predictions> list= await _predictionsController.getPredictionsByRange(start,end);
                         await createPdf(list);
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(vertical: 24),
+                            padding: const EdgeInsets.symmetric(vertical: 24),
                             child: Align(
-                              alignment: Alignment.center,
                               child: Text(
                                 S.of(context).print_save_pdf,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'SF Pro Display',
                                 ),
                               ),
@@ -149,31 +145,29 @@ class _SaveDaysState extends State<SaveDaysScreen>{
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(top: 12),
+                    margin: const EdgeInsets.only(top: 12),
                     child: ElevatedButton(
                       onPressed: () async{
                         setState(() {
                           loadData=true;
                         });
-                        List<Predictions> list= await _predictionsController.getPredictionsByRange(start,end);
-                        PrintPredictions(list);
+                        final List<Predictions> list= await _predictionsController.getPredictionsByRange(start,end);
+                        await printPredictions(list);
                       },
                       style: ElevatedButton.styleFrom(
                         primary: Colors.white,
-                        side: BorderSide(width: 2.0, color: Colors.blue),
+                        side: const BorderSide(width: 2.0, color: Colors.blue),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: EdgeInsets.symmetric(vertical: 24),
+                            padding: const EdgeInsets.symmetric(vertical: 24),
                             child: Align(
-                              alignment: Alignment.center,
                               child: Text(
                                 S.of(context).print_print,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'SF Pro Display',
                                   color: Colors.blue
                                 ),
@@ -196,7 +190,7 @@ class _SaveDaysState extends State<SaveDaysScreen>{
   }
 
   Future<void> createPdf(List<Predictions> list) async{
-    String table="";
+    String table='';
     list.forEach((item) {
       table+="""
       <tr>
@@ -208,7 +202,7 @@ class _SaveDaysState extends State<SaveDaysScreen>{
       </tr>
       """;
     });
-    var htmlContent =
+    final htmlContent =
     """
 <!DOCTYPE html>
 <html>
@@ -235,21 +229,19 @@ class _SaveDaysState extends State<SaveDaysScreen>{
         <th>Заголовок</th>
         <th>Сообщение</th>
       </tr>
-      ${table}
+      $table
     </table>
   </body>
 </html>
 """;
-    var dir = await getExternalStorageDirectory();
-    var targetFileName = "example_pdf_file";
 
 
     setState(() {
       loadData=false;
     });
   }
-  Future<void> PrintPredictions(List<Predictions> list) async{
-    String table="";
+  Future<void> printPredictions(List<Predictions> list) async{
+    String table='';
     list.forEach((item) {
       table+="""
       <tr>
@@ -261,7 +253,7 @@ class _SaveDaysState extends State<SaveDaysScreen>{
       </tr>
       """;
     });
-    var htmlContent =
+    final htmlContent =
     """
 <!DOCTYPE html>
 <html>
@@ -288,7 +280,7 @@ class _SaveDaysState extends State<SaveDaysScreen>{
         <th>Заголовок</th>
         <th>Сообщение</th>
       </tr>
-      ${table}
+      $table
     </table>
   </body>
 </html>
@@ -303,7 +295,7 @@ class _SaveDaysState extends State<SaveDaysScreen>{
 
      */
     await Printing.layoutPdf(
-        onLayout: (PdfPageFormat format) async => await Printing.convertHtml(
+        onLayout: (PdfPageFormat format) async =>  Printing.convertHtml(
           format: format,
           html: htmlContent,
         ));

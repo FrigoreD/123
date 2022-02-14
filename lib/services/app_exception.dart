@@ -1,9 +1,10 @@
  class AppException implements Exception{
+   AppException([this.message, this.prefix, this.url]);
   final String message;
   final String prefix;
   final String url;
 
-  AppException([this.message, this.prefix, this.url]);
+  
 
 }
 class BadRequestException extends AppException{

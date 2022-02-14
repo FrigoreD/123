@@ -3,9 +3,19 @@ part of 'main_bloc.dart';
 @immutable
 abstract class MainEvent extends Equatable {}
 
-class UpdatePredictionMainEvent extends MainEvent {
-  UpdatePredictionMainEvent({this.recommendList, this.healthList});
 
+
+class GetStatus extends MainEvent {
+  GetStatus({this.statusCode});
+
+  final bool statusCode;
+
+  @override
+  List<Object> get props => [statusCode];
+}
+
+class UpdatePredictionList extends MainEvent {
+  UpdatePredictionList({this.recommendList, this.healthList});
   final List<Predictions> recommendList;
   final List<Predictions> healthList;
 

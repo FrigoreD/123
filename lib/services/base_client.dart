@@ -1,28 +1,36 @@
+// ignore_for_file: avoid_classes_with_only_static_members, unnecessary_parenthesis
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-import 'package:astrology_app/services/app_exception.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
+import '../generated/l10n.dart';
+import '../module/shared_void.dart';
+import 'app_exception.dart';
+
 class BaseClient {
-  static final TIME_OUT = 20;
-  static const BASE_URL = 'https://astrologyspica.dev-prod.com.ua/api';
+  static const timeOut = 20;
+  static const baseUrl = 'https://astrologyspica.dev-prod.com.ua/api';
 
   static Future<dynamic> get(
     String api, {
     bool authorization = true,
-    String baseUrl = BASE_URL,
+    String baseUrl = baseUrl,
   }) async {
-    var headers = await getHeaders(authorization);
-    var uri = Uri.parse(baseUrl + api);
+    final Map<String, String> headers = await getHeaders(authorization);
+    final uri = Uri.parse(baseUrl + api);
     debugPrint('@@@ GET url=${uri.toString()}');
 
     try {
-      var response = await http
+      final response = await http
           .get(uri, headers: headers)
-          .timeout((Duration(seconds: TIME_OUT)));
+          .timeout((const Duration(seconds: timeOut)));
+
       return _processResponse(response);
     } on SocketException {
       print('no internet connection');
@@ -38,20 +46,18 @@ class BaseClient {
     String api,
     dynamic payloadObj, {
     bool authorization = true,
-    String baseUrl = BASE_URL,
+    String baseUrl = baseUrl,
   }) async {
-    var uri = Uri.parse(baseUrl + api);
+    final uri = Uri.parse(baseUrl + api);
     debugPrint('@@@ POST url=${uri.toString()}');
 
-    var headers = await getHeaders(authorization);
+    final Map<String, String> headers = await getHeaders(authorization);
 
-    var payload = json.encode(payloadObj).toString();
-    print('payload $payload');
-    print('headers $headers');
+    final payload = json.encode(payloadObj).toString();
     try {
-      var response = await http
+      final response = await http
           .post(uri, body: payload, headers: headers)
-          .timeout((Duration(seconds: TIME_OUT)));
+          .timeout((const Duration(seconds: timeOut)));
       return _processResponse(response);
     } on SocketException {
       throw FetchDataException('no internet connection', uri.toString());
@@ -65,13 +71,12 @@ class BaseClient {
     print(response.statusCode);
     switch (response.statusCode) {
       case 200:
-        var responseJson = utf8.decode(response.bodyBytes);
+        final responseJson = utf8.decode(response.bodyBytes);
         return responseJson;
       case 201:
-        var responseJson = utf8.decode(response.bodyBytes);
+        final responseJson = utf8.decode(response.bodyBytes);
         return responseJson;
       case 400:
-        print('400');
         throw BadRequestException(
             utf8.decode(response.bodyBytes), response.request.url.toString());
       case 404:
@@ -84,13 +89,14 @@ class BaseClient {
     }
   }
 
-  static Future<dynamic> getHeaders(bool authorization) async {
-    final storage = new FlutterSecureStorage();
-    String t = await storage.read(key: 'session');
+  static Future<Map<String, String>> getHeaders(bool authorization) async {
+    const storage = FlutterSecureStorage();
+    final String t = await storage.read(key: 'session');
     if (authorization) {
       return {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + t
+        'Authorization': 'Bearer $t',
+        'Locale': 'ru_RU',
       };
     } else {
       return {

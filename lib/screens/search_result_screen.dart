@@ -1,15 +1,15 @@
-import 'package:astrology_app/Class/Reminder.dart';
-import 'package:astrology_app/Class/ReminderHelper.dart';
-import 'package:astrology_app/controller/predictions_controller.dart';
-import 'package:astrology_app/models/prediction.dart';
-import 'package:astrology_app/Screens/SearchScreen.dart';
-import 'package:astrology_app/Widgets/CardMain.dart';
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:hive/hive.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:astrology_app/generated/l10n.dart';
+
+
+import '../class/reminder_helper.dart';
+import '../class/reminder_model.dart';
+import '../controller/predictions_controller.dart';
+import '../generated/l10n.dart';
+import '../models/prediction.dart';
+import '../widgets/card_main.dart';
+import 'search_screen.dart';
 
 bool loadData=true;
 
@@ -17,16 +17,19 @@ bool loadData=true;
 List<Predictions> list=[];
 PredictionsController _predictionsController=PredictionsController();
 class SettingResultScreen extends StatefulWidget {
+  const SettingResultScreen({Key key,@required this.request}) : super(key: key);
   final String request;
 
-  const SettingResultScreen({Key key,@required this.request}) : super(key: key);
+  
   @override
+  // ignore: no_logic_in_create_state
   _SettingResultState createState() => _SettingResultState(request);
 }
 class _SettingResultState extends State<SettingResultScreen>{
-  final String request;
-  ReminderHelper _reminderHelper=ReminderHelper();
   _SettingResultState(this.request);
+  final String request;
+  final ReminderHelper _reminderHelper=ReminderHelper();
+  
   var txt = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -37,43 +40,49 @@ class _SettingResultState extends State<SettingResultScreen>{
         elevation: 0.0,
         leading: IconButton(
           icon: Container(
-            child: Center(
-              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
-            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
+            child: const Center(
+              child:  Icon(Icons.arrow_back_rounded,color: Colors.grey,),
+            ),
           ),
           onPressed: (){
-            Navigator.push(
+            Navigator.push<void>(
               context,
-              MaterialPageRoute(builder: (context) => SearchScreen()),
+              MaterialPageRoute(builder: (context) => const SearchScreen()),
             );
           },
         ),
-        title: Text(S.of(context).search_result_title,textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
+        title: Text(S.of(context).search_result_title,textAlign: TextAlign.center,style: const TextStyle(color: Colors.black),),
       ),
         body: SafeArea(
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
                 color: Colors.grey[100]
             ),
             child: Column(
               children: [
                 Visibility(
+                  visible: loadData,
                   child: Column(
-                    children: [
+                    children: const [
                       LinearProgressIndicator(),
                       SizedBox(height: 12,)
                     ],
                   ),
-                  visible: loadData,
                 ),
                 Container(
+                decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(24)
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                 child: Center(
                   child: Padding(
+                    padding: const EdgeInsets.only(bottom: 24),
                     child: TextField(
                       controller: txt,
                       textInputAction: TextInputAction.search,
@@ -85,31 +94,24 @@ class _SettingResultState extends State<SettingResultScreen>{
                         errorText: errorText,
                           suffixIcon: IconButton(
                             onPressed: () {
-                              String text=searchController.value.text;
 
                             } ,
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                           )
                       ),
 
                     ),
-                    padding: EdgeInsets.only(bottom: 24),
                   ),
                 ),
-                decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(24)
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
               ),
-                SizedBox(
+                const SizedBox(
                   height: 12,
                 ),
                 Row(
                   children: [
-                    Text(S.of(context).search_result_count.replaceAll("XXX", list.length.toString())),
-                    Spacer(),
-                    Text("filter")
+                    Text(S.of(context).search_result_count.replaceAll('XXX', list.length.toString())),
+                    const Spacer(),
+                    const Text('filter')
                   ],
                 ),
                 Expanded(
@@ -130,28 +132,26 @@ class _SettingResultState extends State<SettingResultScreen>{
     );
   }
 
-  void loadResult() async{
+  Future<void> loadResult() async{
     list.clear();
     list =await _predictionsController.search(widget.request);
-    if(list==null){
-      list=[];
-    }
+    list ??= [];
     setState(() {
       loadData=false;
     });
   }
   Future<void> saveRemainder(Reminder reminder) async{
-    var reminders = await Hive.openBox<Reminder>('Reminder');
-    reminders.add(reminder);
-    reminders.close();
+    final reminders = await Hive.openBox<Reminder>('Reminder');
+    await reminders.add(reminder);
+    await reminders.close();
   }
-  void save(Predictions predictions) async{
+  Future<void> save(Predictions predictions) async{
 
     setState(() {
       loadData=true;
     });
 
-    bool result=await _predictionsController.setFavorite(predictions.id);
+    final bool result=await _predictionsController.setFavorite(predictions.id);
     if(result){
       predictions.favorite=true;
     }

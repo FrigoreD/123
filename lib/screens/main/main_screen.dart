@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-import '../../Screens/MenuScreen.dart';
-import '../../Widgets/event_wiget.dart';
-import '../../Widgets/TitleToolbar.dart';
 import '../../generated/l10n.dart';
+import '../../widgets/event_wiget.dart';
+import '../../widgets/title_toolbar.dart';
+import '../menu_screen.dart';
 import 'main_bloc.dart';
 
 String monthName = 'month_name';
@@ -108,7 +108,6 @@ class _MainState extends State with SingleTickerProviderStateMixin {
                                           selectedDateTime:
                                               date.value as DateTime));
 
-                                      debugPrint('select data ${date.value}');
                                       Navigator.of(context).pop();
                                     },
                                   ),
@@ -182,9 +181,12 @@ class _MainState extends State with SingleTickerProviderStateMixin {
                 ),
                 // tab bar view here
                 Expanded(
-                  child: TabBarView(
-                    controller: _tabController,
-                    children: [
+                    child: TabBarView(
+                  controller: _tabController,
+                  children: [
+                    if (!state.statusCode)
+                      const Center(child: CircularProgressIndicator())
+                    else
                       Container(
                         margin: const EdgeInsets.only(top: 24),
                         child: EventWidget(
@@ -192,14 +194,21 @@ class _MainState extends State with SingleTickerProviderStateMixin {
                           page: 1,
                         ),
                       ),
-                      Center(
-                          child: EventWidget(
-                        eventList: state.healthList,
-                        page: 2,
-                      )),
-                    ],
-                  ),
-                ),
+                    if (!state.statusCode)
+                      const Center(
+                          child: CircularProgressIndicator(
+                        color: Colors.green,
+                      ))
+                    else
+                      Container(
+                        margin: const EdgeInsets.only(top: 24),
+                        child: EventWidget(
+                          eventList: state.healthList,
+                          page: 1,
+                        ),
+                      ),
+                  ],
+                ))
               ],
             ),
           ),

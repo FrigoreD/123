@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class DateTimePicker extends StatefulWidget {
+  const DateTimePicker({Key key}) : super(key: key);
+
   @override
   _DateTimePickerState createState() => _DateTimePickerState();
 }
@@ -11,7 +13,6 @@ class _DateTimePickerState extends State<DateTimePicker> {
   double _height;
   double _width;
 
-  String _setTime, _setDate;
 
   String _hour, _minute, _time;
 
@@ -19,10 +20,10 @@ class _DateTimePickerState extends State<DateTimePicker> {
 
   DateTime selectedDate = DateTime.now();
 
-  TimeOfDay selectedTime = TimeOfDay(hour: 00, minute: 00);
+  TimeOfDay selectedTime = const TimeOfDay(hour: 00, minute: 00);
 
-  TextEditingController _dateController = TextEditingController();
-  TextEditingController _timeController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _timeController = TextEditingController();
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime picked = await showDatePicker(
@@ -49,11 +50,11 @@ class _DateTimePickerState extends State<DateTimePicker> {
         selectedTime = picked;
         _hour = selectedTime.hour.toString();
         _minute = selectedTime.minute.toString();
-        _time = _hour + ' : ' + _minute;
+        _time = '$_hour : $_minute';
         _timeController.text = _time;
         _timeController.text = formatDate(
             DateTime(2019, 08, 1, selectedTime.hour, selectedTime.minute),
-            [hh, ':', nn, " ", am]).toString();
+            [hh, ':', nn, ' ', am]).toString();
       });
     }
   }
@@ -64,7 +65,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
 
     _timeController.text = formatDate(
         DateTime(2019, 08, 1, DateTime.now().hour, DateTime.now().minute),
-        [hh, ':', nn, " ", am]).toString();
+        [hh, ':', nn, ' ', am]).toString();
     super.initState();
   }
 
@@ -76,18 +77,17 @@ class _DateTimePickerState extends State<DateTimePicker> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Date time picker'),
+        title: const Text('Date time picker'),
       ),
-      body: Container(
+      body: SizedBox(
         width: _width,
         height: _height,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
             Column(
               children: <Widget>[
-                Text(
+                const Text(
                   'Choose Date',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
@@ -101,23 +101,22 @@ class _DateTimePickerState extends State<DateTimePicker> {
                   child: Container(
                     width: _width / 1.7,
                     height: _height / 9,
-                    margin: EdgeInsets.only(top: 30),
+                    margin: const EdgeInsets.only(top: 30),
                     alignment: Alignment.center,
                     decoration: BoxDecoration(color: Colors.grey[200]),
                     child: TextFormField(
-                      style: TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 40),
                       textAlign: TextAlign.center,
                       enabled: false,
                       keyboardType: TextInputType.text,
                       controller: _dateController,
                       onSaved: (String val) {
-                        _setDate = val;
                       },
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           disabledBorder:
                           UnderlineInputBorder(borderSide: BorderSide.none),
                           // labelText: 'Time',
-                          contentPadding: EdgeInsets.only(top: 0.0)),
+                          contentPadding: EdgeInsets.only()),
                     ),
                   ),
                 ),
@@ -125,7 +124,7 @@ class _DateTimePickerState extends State<DateTimePicker> {
             ),
             Column(
               children: <Widget>[
-                Text(
+                const Text(
                   'Choose Time',
                   style: TextStyle(
                       fontStyle: FontStyle.italic,
@@ -137,21 +136,20 @@ class _DateTimePickerState extends State<DateTimePicker> {
                     _selectTime(context);
                   },
                   child: Container(
-                    margin: EdgeInsets.only(top: 30),
+                    margin: const EdgeInsets.only(top: 30),
                     width: _width / 1.7,
                     height: _height / 9,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(color: Colors.grey[200]),
                     child: TextFormField(
-                      style: TextStyle(fontSize: 40),
+                      style: const TextStyle(fontSize: 40),
                       textAlign: TextAlign.center,
                       onSaved: (String val) {
-                        _setTime = val;
                       },
                       enabled: false,
                       keyboardType: TextInputType.text,
                       controller: _timeController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           disabledBorder:
                           UnderlineInputBorder(borderSide: BorderSide.none),
                           // labelText: 'Time',

@@ -1,12 +1,12 @@
-import 'dart:ffi';
 
 import 'package:flutter/cupertino.dart';
 
-class menuItem{
+class MenuItem{
+  MenuItem(this.title, this.onClick);
   final String title;
   final VoidCallback onClick;
 
-  menuItem(this.title, this.onClick);
+
 
 
 }

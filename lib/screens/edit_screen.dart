@@ -1,8 +1,11 @@
-import 'package:astrology_app/Screens/MenuScreen.dart';
-import 'package:astrology_app/generated/l10n.dart';
 import 'package:flutter/material.dart';
 
+import '../generated/l10n.dart';
+import 'menu_screen.dart';
+
 class EditScreen extends StatefulWidget{
+  const EditScreen({Key key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() =>_EditScreenState();
 
@@ -16,27 +19,26 @@ class _EditScreenState extends State<EditScreen>{
         elevation: 0.0,
         leading: IconButton(
           icon: Container(
-            child: Center(
-              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
-            ),
-
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(6),
+            ),
+            child: const Center(
+              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
             ),
           ),
           onPressed: (){
             Navigator.push<void>(
               context,
-              MaterialPageRoute(builder: (context) => MenuScreen()),
+              MaterialPageRoute(builder: (context) => const MenuScreen()),
             );
           },
         ),
-        title: Text(S.of(context).EDIT_TITLE,textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
+        title: Text(S.of(context).EDIT_TITLE,textAlign: TextAlign.center,style: const TextStyle(color: Colors.black),),
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
               color: Colors.grey[100]
           ),

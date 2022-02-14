@@ -1,25 +1,27 @@
 import 'dart:math';
 
-import 'package:astrology_app/Screens/MenuScreen.dart';
-import 'package:astrology_app/Widgets/CardMain.dart';
-import 'package:astrology_app/controller/reminder_controller.dart';
-import 'package:astrology_app/dto/expandedClass.dart';
-import 'package:astrology_app/models/prediction.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:astrology_app/screens/menu_screen.dart';
+import 'package:astrology_app/widgets/card_main.dart';
 import 'package:flutter/material.dart';
-import 'package:astrology_app/generated/l10n.dart';
 import 'package:intl/intl.dart';
+
+
+import '../controller/reminder_controller.dart';
+import '../dto/expanded_model.dart';
+import '../generated/l10n.dart';
+import '../models/prediction.dart';
 
 bool loadData=true;
 
 final ReminderController _reminderController=ReminderController();
 class ReminderScreen extends StatefulWidget {
+  const ReminderScreen({Key key}) : super(key: key);
+
   @override
   _ReminderState createState() => _ReminderState();
 }
 List<ExpandedClass>data=[];
 List<Predictions> remindersList =[];
-var persons;
 class _ReminderState extends State<ReminderScreen>{
 
 
@@ -32,56 +34,55 @@ class _ReminderState extends State<ReminderScreen>{
         elevation: 0.0,
         leading: IconButton(
           icon: Container(
-            child: Center(
-              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
-            ),
-
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
+            child: const Center(
+              child: Icon(Icons.arrow_back_rounded,color: Colors.grey,),
+            ),
           ),
           onPressed: (){
-            Navigator.push(
+            Navigator.push<void>(
               context,
-              MaterialPageRoute(builder: (context) => MenuScreen()),
+              MaterialPageRoute(builder: (context) => const MenuScreen()),
             );
           },
         ),
-        title: Text(S.of(context).menu_reminder,textAlign: TextAlign.center,style: TextStyle(color: Colors.black),),
+        title: Text(S.of(context).menu_reminder,textAlign: TextAlign.center,style: const TextStyle(color: Colors.black),),
       ),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
               color: Colors.grey[100]
           ),
           child: Column(
             children: [
               Visibility(
+                visible: loadData,
                 child: Column(
-                  children: [
+                  children: const [
                     LinearProgressIndicator(),
                     SizedBox(height: 12,)
                   ],
                 ),
-                visible: loadData,
               ),
               Expanded(
                   child: ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, i) {
-                      return new ExpansionTile(
+                      return ExpansionTile(
                         title: Row(
                           children: [
-                            Text(DateFormat("dd MMM").format(data[i].headExpanded),style: TextStyle(),),
-                            Spacer(),
+                            Text(DateFormat('dd MMM').format(data[i].headExpanded),style: const TextStyle(),),
+                            const Spacer(),
                             GestureDetector(
-                              child: Text("Удалить",style: TextStyle(color: Colors.blue),),
+                              child: const Text('Удалить',style: TextStyle(color: Colors.blue),),
                               onTap: (){
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                    content: Text("Remove "+data[i].headExpanded.toIso8601String()),
+                                    content: Text('Remove ${data[i].headExpanded.toIso8601String()}'),
 
                                   ),
                                 );
@@ -91,7 +92,7 @@ class _ReminderState extends State<ReminderScreen>{
                           ],
                         ),
                         children: <Widget>[
-                          new Column(
+                          Column(
                             children: _buildExpandableContent(data[i]),
                           ),
                         ],
@@ -105,10 +106,11 @@ class _ReminderState extends State<ReminderScreen>{
       ),
     );
   }
-  _buildExpandableContent(ExpandedClass card) {
-    List<Widget> columnContent = [];
-    for (Predictions content in card.cardExpanded)
+  List<Widget> _buildExpandableContent(ExpandedClass card) {
+    final List<Widget> columnContent = [];
+    for (final Predictions content in card.cardExpanded) {
       columnContent.add(CardMain(card: content));
+    }
     return columnContent;
   }
 
@@ -117,14 +119,14 @@ class _ReminderState extends State<ReminderScreen>{
     load();
     super.initState();
   }
-  void load()async{
+  Future<void> load()async{
     remindersList.clear();
     remindersList =await _reminderController.getRemainderList();
     print(remindersList.length);
     data.clear();
-    List<String> datesList=[];
+    final List<String> datesList=[];
     remindersList.forEach((element) {
-      List<Predictions> dataList=[];
+      final List<Predictions> dataList=[];
       dataList.clear();
       if(datesList.contains(DateFormat.yMd().format(element.datePrediction))){
         data.firstWhere((element1) =>
@@ -143,7 +145,6 @@ class _ReminderState extends State<ReminderScreen>{
 
   @override
   void dispose() {
-    persons.close();
     super.dispose();
   }
 }
@@ -155,7 +156,7 @@ List<Predictions> generateList(int numberOfItems){
   });
 }
 List<ExpandedClass> generateItems(int numberOfItems) {
-  int count=Random().nextInt(5);
+  final int count=Random().nextInt(5);
   return List.generate(numberOfItems, (int index) {
     return ExpandedClass(
       headExpanded: DateTime.now(),

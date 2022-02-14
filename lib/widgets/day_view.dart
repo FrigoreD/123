@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
 
 const headerHeight = 50.0;
 const hourHeight = 100.0;
 
 class DayView extends StatelessWidget {
+  const DayView({Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
@@ -25,7 +27,7 @@ class DayView extends StatelessWidget {
       height: hourHeight * 24,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(7, (d) => _buildColumn(d)),
+        children: List.generate(7, _buildColumn),
       ),
     );
   }
@@ -40,7 +42,7 @@ class DayView extends StatelessWidget {
             right: 0.0,
             height: 50.0 * (d + 1),
             child: Container(
-              margin: EdgeInsets.symmetric(horizontal: 2.0),
+              margin: const EdgeInsets.symmetric(horizontal: 2.0),
               color: Colors.orange[100 + d * 100],
             ),
           )
@@ -55,7 +57,7 @@ class WeekViewHeaderDelegate extends SliverPersistentHeaderDelegate {
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     return Container(
       color: Colors.red.withOpacity(0.5),
-      child: Center(
+      child: const Center(
         child: Text('HEADER'),
       ),
     );

@@ -1,13 +1,14 @@
 import 'dart:convert';
 
-import 'package:astrology_app/controller/base_controller.dart';
-import 'package:astrology_app/models/prediction.dart';
-import 'package:astrology_app/services/base_client.dart';
+
+import '../models/prediction.dart';
+import '../services/base_client.dart';
+import 'base_controller.dart';
 
 class ReminderController with BaseController {
   Future<List<Predictions>> getRemainderList() async{
     print('start controller');
-    var response=await BaseClient.get('/predictions/getFavorite').catchError(handleError);
+    final response=await BaseClient.get('/predictions/getFavorite').catchError(handleError);
     if(response==null) return null;
     print(response);
     return predictionsFromJson(response);

@@ -1,55 +1,56 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:astrology_app/Screens/Otp.dart';
-import 'package:astrology_app/controller/auth_controller.dart';
-import 'package:astrology_app/generated/l10n.dart';
-import 'package:astrology_app/helper/dialog_helper.dart';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
-import 'package:progress_dialog/progress_dialog.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:astrology_app/Class/CountryClass.dart';
-import 'package:astrology_app/Page/RegistrationPage.dart';
-import 'package:astrology_app/Widgets/ButtionLine.dart';
-import 'package:astrology_app/Widgets/SelectorWiget.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../class/country_model.dart';
+import '../controller/auth_controller.dart';
+import '../generated/l10n.dart';
+import '../helper/dialog_helper.dart';
+import '../page/registration_page.dart';
+import '../widgets/button_line.dart';
+import '../widgets/selector_widget.dart';
 import 'main/main_screen.dart';
+import 'otp.dart';
 
 
 final AuthController _authController=AuthController();
 class RegistrationScreen extends StatefulWidget {
+  const RegistrationScreen({Key key}) : super(key: key);
+
   @override
   _RegistrationState createState() => _RegistrationState();
 }
 TextEditingController emailController=TextEditingController();
-List<countryClass> countryList = [
-  countryClass("Русский", "ru"),
-  countryClass("English", "en")
+List<Country> countryList = [
+  Country('Русский', 'ru'),
+  Country('English', 'en')
 ];
 
 
 class _RegistrationState extends State<RegistrationScreen> {
-  final controller = PageController(initialPage: 0);
-  String name = "";
-  String dateBurn = "";
-  String timeBurn = "";
-  String language = "";
-  String login = "";
-  String timeBirth = "";
+  final controller = PageController();
+  String name = '';
+  String dateBurn = '';
+  String timeBurn = '';
+  String language = '';
+  String login = '';
+  String timeBirth = '';
   String tokenUser='';
-  String country = "";
+  String country = '';
   String placeId='';
 
-  void connection()async {
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
+  Future<void> connection()async {
+    final FirebaseMessaging messaging = FirebaseMessaging.instance;
 
-    NotificationSettings settings = await messaging.requestPermission(
+    final NotificationSettings settings = await messaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -59,7 +60,7 @@ class _RegistrationState extends State<RegistrationScreen> {
       sound: true,
     );
     print('User granted permission: ${settings.authorizationStatus}');
-    messaging.getToken().then((token) => tokenUser=token);
+    await messaging.getToken().then((token) => tokenUser=token);
 
 
   }
@@ -74,22 +75,20 @@ class _RegistrationState extends State<RegistrationScreen> {
   bool showLoad=false;
   @override
   Widget build(BuildContext context) {
-    final ProgressDialog pr = ProgressDialog(context);
     return SafeArea(
         child: PageView(
-          physics: new NeverScrollableScrollPhysics(),
-          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
           controller: controller,
           children: [
 
             Scaffold(
           body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  margin: EdgeInsets.only(bottom: 32),
+                  margin: const EdgeInsets.only(bottom: 32),
                   child: Text(
                     S.of(context).registration_page_set_email_title,
                   ),
@@ -114,7 +113,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                       hintText: S.of(context).registration_page_set_email_hint),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: 12),
+                  margin: const EdgeInsets.only(top: 12),
                   child: ElevatedButton(
                     onPressed: () {
                       if (emailController.text.isEmpty) {
@@ -131,25 +130,23 @@ class _RegistrationState extends State<RegistrationScreen> {
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(vertical: 12),
+                          padding: const EdgeInsets.symmetric(vertical: 12),
                           child: Align(
-                            alignment: Alignment.center,
                             child: Row(
                               children: [
                                 Visibility(
-                                  child: CircularProgressIndicator(
+                                  visible: showLoad,
+                                  child: const CircularProgressIndicator(
                                     backgroundColor: Colors.white,
                                   ),
-                                  visible: showLoad,
                                 ),
-                                SizedBox(width: 12,),
+                                const SizedBox(width: 12,),
                                 Text(
                                   S.of(context).next_button,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontFamily: 'SF Pro Display',
                                   ),
                                 )
@@ -163,44 +160,42 @@ class _RegistrationState extends State<RegistrationScreen> {
                 )
               ],
             ),
-            padding: EdgeInsets.symmetric(horizontal: 32),
           ),
         ),
             Scaffold(
               body: Center(
                   child: SingleChildScrollView(
-                    physics: ScrollPhysics(),
+                    physics: const ScrollPhysics(),
                     child: Column(
                       children: [
                         Container(
+                          margin: const EdgeInsets.only(bottom: 32),
                           child: Align(
-                            alignment: Alignment.center,
                             child: Text(
                               S.of(context).registration_page_select_language,
                               textAlign: TextAlign.center,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontFamily: 'SF Pro Display',
                                   color: Colors.blue,
                                   fontSize: 24,
                                   fontWeight: FontWeight.bold),
                             ),
                           ),
-                          margin: EdgeInsets.only(bottom: 32),
                         ),
                         ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
+                            physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: countryList.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return selectorWidget(
+                              return SelectorWidget(
                                 onClick: (value) {
-                                  var locale = Locale(countryList[index].cod,'');
+                                  final locale = Locale(countryList[index].code,'');
                                   Get.updateLocale(locale);
                                   setState(() {
                                     language = value;
                                   });
                                   controller.animateToPage(2,
-                                      duration: Duration(milliseconds: 300),
+                                      duration: const Duration(milliseconds: 300),
                                       curve: Curves.easeIn);
                                   },
                                 countryItem: countryList[index],
@@ -213,54 +208,54 @@ class _RegistrationState extends State<RegistrationScreen> {
             RegistrationPageModel(
               context: context,
               onClick: (text,key) {
-                debugPrint("messsage = $text");
+                debugPrint('messsage = $text');
                 setState(() {
                   //    FocusScope.of(context).unfocus();
                     name = text;
                 });
                 controller.animateToPage(3,
-                    duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
                 },
-              Title: S.of(context).registration_page_set_name_title,
-              Hint: S.of(context).registration_page_set_name_hint,
-              type: TYPE_TEXT,
+              title: S.of(context).registration_page_set_name_title,
+              hint: S.of(context).registration_page_set_name_hint,
+              type: typeText,
             ),
             RegistrationPageModel(
               context: context,
               onClick: (text,key) {
-                debugPrint("messsage = $text");
+                debugPrint('messsage = $text');
                 setState(() {
                   dateBurn = text;
                 });
                 controller.animateToPage(4,
-                    duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
                 },
-              Title: S.of(context).registration_page_set_date_birth_title,
-              Hint: S.of(context).registration_page_set_date_birth_hint,
-              type: TYPE_DATE,
+              title: S.of(context).registration_page_set_date_birth_title,
+              hint: S.of(context).registration_page_set_date_birth_hint,
+              type: typeDate,
             ),
             RegistrationPageModel(
               context: context,
               onClick: (text,key) {
-                debugPrint("messsage = $text");
+                debugPrint('messsage = $text');
                 setState(() {
                   timeBurn = text;
-                  DateTime dateTime = DateFormat('dd.MM.yyyy HH:mm')
-                      .parseLoose(dateBurn + ' ' + timeBurn);
-                  timeBirth = DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
+                  final DateTime dateTime = DateFormat('dd.MM.yyyy HH:mm')
+                      .parseLoose('$dateBurn $timeBurn');
+                  timeBirth = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
                 });
                 controller.animateToPage(5,
-                    duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
                 },
-              Title: S.of(context).registration_page_set_time_birth_title,
-              Hint: S.of(context).registration_page_set_time_birth_hint,
-              type: TYPE_TIME,
+              title: S.of(context).registration_page_set_time_birth_title,
+              hint: S.of(context).registration_page_set_time_birth_hint,
+              type: typeTime,
             ),
             RegistrationPageModel(
               context: context,
               onClick: (text,key) {
                 if(key!=''){
-                  debugPrint("messsage = $key");
+                  debugPrint('messsage = $key');
                   placeId=key;
                 }
                 if(text!=''){
@@ -269,24 +264,23 @@ class _RegistrationState extends State<RegistrationScreen> {
                   });
                 }
                 controller.animateToPage(6,
-                    duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                    duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
               },
-              Title: S.of(context).registration_page_set_location,
-              Hint: S.of(context).registration_page_set_location,
-              type: TYPE_COUNTRY,
+              title: S.of(context).registration_page_set_location,
+              hint: S.of(context).registration_page_set_location,
+              type: typeCountry,
             ),
             Scaffold(
               body: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Align(
-                      alignment: Alignment.center,
                       child: Text(
                         S.of(context).registration_page_check_info,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'SF Pro Display',
                             color: Colors.blue,
                             fontSize: 24,
@@ -299,7 +293,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                           Text(
                             S.of(context).name,
                             textAlign: TextAlign.left,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: 'SF Pro Display',
                                 color: Colors.blue,
                                 fontSize: 24,
@@ -308,7 +302,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                           Text(
                             name,
                             textAlign: TextAlign.right,
-                            style: TextStyle(
+                            style: const TextStyle(
                               fontFamily: 'SF Pro Display',
                               fontSize: 24,
                             ),
@@ -318,7 +312,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                           Text(
                             S.of(context).date_burn,
                             textAlign: TextAlign.left,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontFamily: 'SF Pro Display',
                                 color: Colors.blue,
                                 fontSize: 24,
@@ -327,7 +321,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                           Text(
                         dateBurn,
                         textAlign: TextAlign.right,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'SF Pro Display',
                           fontSize: 24,
                         ),
@@ -337,7 +331,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                       Text(
                         S.of(context).time_burn,
                         textAlign: TextAlign.left,
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontFamily: 'SF Pro Display',
                             color: Colors.blue,
                             fontSize: 24,
@@ -346,7 +340,7 @@ class _RegistrationState extends State<RegistrationScreen> {
                       Text(
                         timeBurn,
                         textAlign: TextAlign.right,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontFamily: 'SF Pro Display',
                           fontSize: 24,
                         ),
@@ -355,13 +349,13 @@ class _RegistrationState extends State<RegistrationScreen> {
                   ],
                 ),
                     Text(jsonEncode({
-                      "firstName": name,
-                      "dateBirth": dateBurn,
-                      "lang": language,
-                      "login": login,
-                      "timeBirth": timeBirth,
-                      "country": country,
-                      "token":tokenUser
+                      'firstName': name,
+                      'dateBirth': dateBurn,
+                      'lang': language,
+                      'login': login,
+                      'timeBirth': timeBirth,
+                      'country': country,
+                      'token':tokenUser
                     })),
                     ButtonLine(
                       onClick: () {
@@ -371,7 +365,6 @@ class _RegistrationState extends State<RegistrationScreen> {
                     )
                   ],
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 32),
               ),
             ),
           ],
@@ -380,12 +373,12 @@ class _RegistrationState extends State<RegistrationScreen> {
 
 
 
-  void checkEmail(email) async {
+  Future<void> checkEmail(String email) async {
     try {
-      var url = Uri.parse('https://astrologyspica.dev-prod.com.ua/api/customers/checkEmail');
-      var response = await http.post(url,
+      final url = Uri.parse('https://astrologyspica.dev-prod.com.ua/api/customers/checkEmail');
+      final response = await http.post(url,
           body: jsonEncode({
-            "email": email,
+            'email': email,
           }),
           headers: {'Content-Type': 'application/json'});
 
@@ -395,79 +388,78 @@ class _RegistrationState extends State<RegistrationScreen> {
 
       switch(response.statusCode){
         case 200:
-          Map<String, dynamic> map = jsonDecode(response.body);
-          final result = await Navigator.push(
+          final dynamic result = await Navigator.push<dynamic>(
             context,
-            MaterialPageRoute(
+            MaterialPageRoute<dynamic>(
                 builder: (context) => Otp(
                   email: email,
                 )),
           );
           if (result == 'done') {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
+            final SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setBool('userLogin', true);
-            Route route = MaterialPageRoute(builder: (context) => MainScreen());
-            Navigator.pushReplacement(context, route);
+            final Route route = MaterialPageRoute(builder: (context) => const MainScreen());
+            await Navigator.pushReplacement(context, route);
           }
           break;
         case 204:
-          controller.animateToPage(1,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          await controller.animateToPage(1,
+              duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
           break;
         case 400:
           final snackBar = SnackBar(content: Text(jsonDecode(response.body)[0]));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         case 404:
-          controller.animateToPage(1,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          await controller.animateToPage(1,
+              duration: const Duration(milliseconds: 300), curve: Curves.easeIn);
           break;
         default:
-          final snackBar = SnackBar(content: Text("response code "+response.statusCode.toString()+'\n'+response.body));
+          final snackBar = SnackBar(content: Text('response code ${response.statusCode}\n${response.body}'));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
       }
     } on SocketException {
       print('No Internet connection 😑');
-      final snackBar = SnackBar(content: Text("SocketException "));
+      const snackBar = SnackBar(content: Text('SocketException '));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } on HttpException {
       print("Couldn't find the post 😱");
-      final snackBar = SnackBar(content: Text("HttpException"));
+      const snackBar = SnackBar(content: Text('HttpException'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     } on FormatException {
-      print("Bad response format 👎");
-      final snackBar = SnackBar(content: Text("FormatException"));
+      print('Bad response format 👎');
+      const snackBar = SnackBar(content: Text('FormatException'));
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
   Future<void> registration() async{
-    DateTime timeBurn=new DateFormat("yyyy-MM-dd hh:mm").parse(timeBirth);
+    final DateTime timeBurn=DateFormat('yyyy-MM-dd hh:mm').parse(timeBirth);
     final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
     if(placeId==''){
       placeId='ChIJS9tioOplwUMRIH9W99dDAtU';
     }
-    var data={
-      "name": name,
-      "dateTimeBirth":timeBurn.toIso8601String(),
-      "lang": language,
-      "email": emailController.text,
-      "city": country,
-      "token":tokenUser,
-      "timeZone":currentTimeZone,
-      "placeId":placeId
+    final data={
+      'name': name,
+      'dateTimeBirth':timeBurn.toIso8601String(),
+      'lang': language,
+      'email': emailController.text,
+      'city': country,
+      'token':tokenUser,
+      'timeZone':currentTimeZone,
+      'placeId':placeId
     };
-    var result= await _authController.registration(data);
+    final result= await _authController.registration(data);
     if(result){
       await saveUser();
-      Get.offAll(()=>MainScreen());
+      await Get.offAll<void>(()=>const MainScreen());
     }else{
       DialogHelper.showErrorDialog(title: 'Ошибка',description: 'Ошибка регистрации');
     }
   }
 
   Future<void> saveUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
     await prefs.setBool('userLogin', true);
     await prefs.setString('firstName', name);
@@ -478,4 +470,4 @@ class _RegistrationState extends State<RegistrationScreen> {
   }
 }
 
-final storage = new FlutterSecureStorage();
+const storage = FlutterSecureStorage();

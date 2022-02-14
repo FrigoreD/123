@@ -1,29 +1,29 @@
-import 'package:astrology_app/Class/MenuItem.dart';
-import 'package:astrology_app/Screens/ReminderScreen.dart';
-import 'package:astrology_app/Screens/SaveDaysScreen.dart';
-import 'package:astrology_app/Screens/SearchScreen.dart';
-import 'package:astrology_app/Screens/SettingScreen.dart';
-import 'package:astrology_app/Widgets/menuButton.dart';
-import 'package:astrology_app/generated/l10n.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
+import '../class/menu_item_model.dart';
+import '../generated/l10n.dart';
+import '../widgets/menu_button.dart';
 import 'main/main_screen.dart';
+import 'reminder_screen.dart';
+import 'save_days_screen.dart';
+import 'search_screen.dart';
+import 'setting_screen.dart';
 
 
 
 BuildContext contextMain;
 class MenuScreen extends StatelessWidget{
+   const MenuScreen({Key key, this.contextItem}) : super(key: key);
 
   final BuildContext contextItem;
-
-  const MenuScreen({Key key, this.contextItem}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     contextMain=contextItem;
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         S.delegate,
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
@@ -33,13 +33,15 @@ class MenuScreen extends StatelessWidget{
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MenuPage(),
+      home: const MenuPage(),
     );
   }
 
 }
-List<menuItem> list=[];
+List<MenuItem> list=[];
 class MenuPage extends StatefulWidget {
+  const MenuPage({Key key}) : super(key: key);
+
   @override
   _MenuState createState() => _MenuState();
 }
@@ -57,18 +59,18 @@ class _MenuState extends State<MenuPage>{
         elevation: 0.0,
         leading: IconButton(
           icon: Container(
-            child: Center(
-              child: Icon(Icons.close,color: Colors.grey ,),
-            ),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(6),
             ),
+            child: const Center(
+              child: Icon(Icons.close,color: Colors.grey ,),
+            ),
           ),
           onPressed: (){
-            Navigator.push(
+            Navigator.push<void>(
               context,
-              MaterialPageRoute(builder: (context) => MainScreen()),
+              MaterialPageRoute(builder: (context) => const MainScreen()),
             );
           },
         ),
@@ -76,33 +78,32 @@ class _MenuState extends State<MenuPage>{
       ),
       body: SafeArea(
         child: Container(
-          margin: EdgeInsets.only(bottom: 55),
+          margin: const EdgeInsets.only(bottom: 55),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              menuButton(title: S.of(context).menu_search,onClick: (){
+              MenuButton(title: S.of(context).menu_search,onClick: (){
                 Navigator.push<void>(
                   context,
-                  MaterialPageRoute(builder: (context) => SearchScreen()),
+                  MaterialPageRoute(builder: (context) => const SearchScreen()),
                 );
               },),
-              menuButton(title: S.of(context).menu_reminder,onClick: (){
-                Navigator.push(
+              MenuButton(title: S.of(context).menu_reminder,onClick: (){
+                Navigator.push<void>(
                   context,
-                  MaterialPageRoute(builder: (context) => ReminderScreen()),
+                  MaterialPageRoute(builder: (context) => const ReminderScreen()),
                 );
               },),
-              menuButton(title: S.of(context).menu_save_days,onClick: (){
-                Navigator.push(
+              MenuButton(title: S.of(context).menu_save_days,onClick: (){
+                Navigator.push<void>(
                   context,
-                  MaterialPageRoute(builder: (context) => SaveDaysScreen()),
+                  MaterialPageRoute(builder: (context) => const SaveDaysScreen()),
                 );
               },),
-              menuButton(title: S.of(context).menu_settings,onClick: (){
-                Navigator.push(
+              MenuButton(title: S.of(context).menu_settings,onClick: (){
+                Navigator.push<void>(
                   context,
-                  MaterialPageRoute(builder: (context) => SettingScreen()),
+                  MaterialPageRoute(builder: (context) => const SettingScreen()),
                 );
               },),
             ],

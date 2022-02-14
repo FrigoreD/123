@@ -1,27 +1,31 @@
-import 'package:astrology_app/Class/CountryClass.dart';
+// ignore_for_file: inference_failure_on_function_return_type
+
 import 'package:flutter/material.dart';
 
-class selectorWidget extends StatelessWidget{
-  final Function(String)  onClick;
-  final countryClass countryItem;
+import '../class/country_model.dart';
 
-  const selectorWidget({Key key, this.onClick, this.countryItem}) : super(key: key);
+
+
+class SelectorWidget extends StatelessWidget{
+  const SelectorWidget({Key key, this.onClick, this.countryItem}) : super(key: key);
+  final Function(String)  onClick;
+  final Country countryItem;
+
+  
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 40),
+            padding: const EdgeInsets.symmetric(vertical: 40),
             child: Align(
-              alignment: Alignment.center,
               child: Text(
                 countryItem.name,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                     fontFamily: 'SF Pro Display',
                     color: Colors.grey,
                     fontSize: 24
@@ -32,8 +36,8 @@ class selectorWidget extends StatelessWidget{
         ],
       ),
       onTap: (){
-        debugPrint("select languge "+countryItem.cod);
-        onClick(countryItem.cod);
+        debugPrint('select languge ${countryItem.code}');
+        onClick(countryItem.code);
       },
     );
   }

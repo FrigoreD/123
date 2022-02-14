@@ -1,11 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 import 'package:intl/intl.dart';
 
 import '../controller/predictions_controller.dart';
-import '../dto/HourClass.dart';
+import '../dto/hour_class.dart';
 import '../models/prediction.dart';
-import 'CardMain.dart';
+import 'card_main.dart';
 
 PredictionsController _predictionsController = PredictionsController();
 
@@ -28,7 +30,7 @@ class _DayView extends State<EventWidget> {
     HourClass(convertDate('05:00'), convertDate('05:59'), []),
     HourClass(convertDate('06:00'), convertDate('06:59'), []),
     HourClass(convertDate('07:00'), convertDate('07:59'), []),
-    HourClass(convertDate("08:00"), convertDate('08:59'), []),
+    HourClass(convertDate('08:00'), convertDate('08:59'), []),
     HourClass(convertDate('09:00'), convertDate('09:59'), []),
     HourClass(convertDate('10:00'), convertDate('10:59'), []),
     HourClass(convertDate('11:00'), convertDate('11:59'), []),
@@ -49,13 +51,27 @@ class _DayView extends State<EventWidget> {
   //_DayView(this.eventList, this.page);
 
   List<Predictions> eventList;
+  Timer timer;
   int page;
 
   @override
   void initState() {
+    _setWidget();
+    super.initState();
+  }
+
+  void _setWidget() {
     eventList = widget.eventList;
     page = widget.page;
-    super.initState();
+    setState(() {});
+  }
+
+  @override
+  void didUpdateWidget(EventWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget != widget) {
+      _setWidget();
+    }
   }
 
   Widget _buildSideHeader(int index) {
@@ -66,8 +82,8 @@ class _DayView extends State<EventWidget> {
         alignment: Alignment.centerLeft,
         child: Column(
           children: [
-            Text(DateFormat("HH:mm").format(ec[index].start)),
-            Text(DateFormat("HH:mm").format(ec[index].end))
+            Text(DateFormat('HH:mm').format(ec[index].start)),
+            Text(DateFormat('HH:mm').format(ec[index].end))
           ],
         ));
   }
